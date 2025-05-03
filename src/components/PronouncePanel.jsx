@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const splitSyllables = (word) => {
   const syllables = word
@@ -15,36 +15,62 @@ const PronouncePanel = ({ word }) => {
   const [userSpeech, setUserSpeech] = useState("");
   const [score, setScore] = useState(null);
   const [meaning, setMeaning] = useState("");
+  const [teluguMeaning, setTeluguMeaning] = useState("");
+  const [showMeaning, setShowMeaning] = useState(false);
+  const [showTeluguMeaning, setShowTeluguMeaning] = useState(false);
 
-  useEffect(() => {
-    const fetchMeaning = async () => {
-      try {
-        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        const data = await res.json();
-        const meaning = data[0]?.meanings?.[0]?.definitions?.[0]?.definition;
-        setMeaning(meaning || "Not available");
-      } catch (err) {
-        console.error("Meaning fetch failed", err);
-        setMeaning("Not available");
+  const fetchEnglishMeaning = async () => {
+    if (!word || word.trim() === "") {
+      setMeaning("Please enter a word.");
+      return;
+    }
+    try {
+      const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+      if (!res.ok) {
+        setMeaning("Word not found.");
+        return;
       }
-    };
-    fetchMeaning();
-  }, [word]);
+      const data = await res.json();
+      const engMeaning = data[0]?.meanings?.[0]?.definitions?.[0]?.definition;
+      setMeaning(engMeaning || "Not available");
+      setShowMeaning(true);
+      setShowTeluguMeaning(false);
+    } catch (err) {
+      console.error("Error fetching English meaning:", err);
+      setMeaning("Error fetching meaning.");
+    }
+  };
+
+  const fetchTeluguMeaning = async () => {
+    if (!meaning || meaning === "Not available") {
+      setTeluguMeaning("Please fetch English meaning first.");
+      setShowTeluguMeaning(true);
+      setShowMeaning(false);
+      return;
+    }
+    try {
+      const transRes = await fetch(`https://lingva.ml/api/v1/en/te/${meaning}`);
+      const transData = await transRes.json();
+      setTeluguMeaning(transData?.translation || "Not available");
+      setShowTeluguMeaning(true);
+      setShowMeaning(false);
+    } catch (err) {
+      console.error("Error fetching Telugu meaning:", err);
+      setTeluguMeaning("Error fetching translation.");
+      setShowTeluguMeaning(true);
+      setShowMeaning(false);
+    }
+  };
 
   const handleSpeak = () => {
     const utterance = new SpeechSynthesisUtterance(word);
     utterance.lang = "en-US";
     setCurrentIndex(0);
-
     const interval = 400;
     syllables.forEach((_, idx) => {
       setTimeout(() => setCurrentIndex(idx), idx * interval);
     });
-
-    setTimeout(() => {
-      setCurrentIndex(-1);
-    }, syllables.length * interval + 300);
-
+    setTimeout(() => setCurrentIndex(-1), syllables.length * interval + 300);
     window.speechSynthesis.speak(utterance);
   };
 
@@ -53,12 +79,10 @@ const PronouncePanel = ({ word }) => {
       alert("Speech Recognition not supported.");
       return;
     }
-
     const recognition = new window.webkitSpeechRecognition();
     recognition.lang = "en-US";
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
-
     setIsListening(true);
     setUserSpeech("");
     setScore(null);
@@ -83,7 +107,6 @@ const PronouncePanel = ({ word }) => {
     const matrix = Array.from({ length: a.length + 1 }, () =>
       Array(b.length + 1).fill(0)
     );
-
     for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
     for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
 
@@ -105,51 +128,56 @@ const PronouncePanel = ({ word }) => {
   };
 
   return (
-    <div className="bg-orange-100 p-6 rounded-xl shadow-md w-full">
-      <h2 className="text-2xl font-semibold mb-4 text-gray-700 capitalize">
+    <div className="bg-orange-100 p-4 md:p-6 rounded-xl shadow-md w-full max-w-2xl mx-auto">
+      <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-700 capitalize text-center">
         {word}
       </h2>
 
-      <p className="text-md italic mb-4"> Meaning: {meaning}</p>
-
-      <div className="flex flex-wrap justify-center gap-4 mb-4">
+      <div className="flex flex-wrap justify-center gap-3 mb-6">
         {syllables.map((s, idx) => (
-          <div
-            key={idx}
-            className={`px-4 py-2 rounded-lg text-lg font-semibold transition-all duration-300 ${
+          <div key={idx} className={`px-4 py-2 rounded-lg text-lg md:text-xl font-semibold transition-all duration-300 ${
               currentIndex === idx
-                ? "bg-orange-500 scale-125 text-white shadow-lg"
+                ? "bg-orange-500 scale-110 text-white shadow-lg"
                 : "bg-orange-200 text-gray-700"
-            }`}
-          >
+            }`}>
             {s}
           </div>
         ))}
       </div>
 
-      <div className="flex gap-4 justify-center mb-4">
-        <button
-          onClick={handleSpeak}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg text-lg transition"
-        >
+      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+        <button onClick={handleSpeak}
+          className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-lg">
           🔊 Speak
         </button>
-        <button
-          onClick={handleRecord}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-lg transition"
-        >
+        <button onClick={handleRecord}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg text-lg">
           🎤 {isListening ? "Listening..." : "Record"}
         </button>
       </div>
 
+      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+        <button onClick={fetchEnglishMeaning}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
+          Show English Meaning
+        </button>
+        <button onClick={fetchTeluguMeaning}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
+          Show Telugu Meaning
+        </button>
+      </div>
+
+      {showMeaning && (<p className="text-md text-green-800 font-semibold text-center px-2">{meaning}</p>)}
+      {showTeluguMeaning && (<p className="text-md text-purple-700 font-semibold text-center px-2">{teluguMeaning}</p>)}
+
       {userSpeech && (
-        <p className="text-gray-800 text-lg">
+        <p className="text-gray-800 text-lg text-center mt-4">
           You said: <strong>{userSpeech}</strong>
         </p>
       )}
       {score !== null && (
         <p
-          className={`text-xl font-bold mt-2 ${
+          className={`text-xl font-bold text-center mt-2 ${
             score > 80
               ? "text-green-600"
               : score > 50
