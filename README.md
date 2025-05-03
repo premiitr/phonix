@@ -53,12 +53,6 @@ npm start
 
 ---
 
-## 📄 License
-
-MIT License
-
----
-
 ## 👨‍💻 Author
 
 **Prem** – [GitHub](https://github.com/premiitr)
