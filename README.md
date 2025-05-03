@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+# 🔊 Phonix – English Pronunciation Practice App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Live Demo 🔗](https://phonix-nine.vercel.app/)
 
-## Available Scripts
+Phonix is an interactive, kid-friendly web app designed to help users **learn and practice English word pronunciation**. It uses **speech synthesis** to demonstrate pronunciation and **speech recognition** to evaluate spoken input. Users can also fetch the **English** and **Telugu meanings** of words with a click.
 
-In the project directory, you can run:
+Built with **React**, this app is ideal for both kids and beginners learning English.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 🚀 Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- 🎙️ **Speak the Word**: Uses browser's text-to-speech to pronounce the entered word.
+- ✂️ **Syllable Highlighting**: Breaks the word into syllables and highlights them in sync while speaking.
+- 🗣️ **Voice Recognition**: Records user's speech and calculates a **pronunciation score**.
+- 📖 **English Meaning**: Fetches and displays the English dictionary meaning of the word.
+- 🇮🇳 **Telugu Meaning**: Translates the English meaning into **Telugu** (for bilingual support).
+- 📱 **Fully Responsive**: Works smoothly on mobile, tablet, and desktop devices.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🌐 Live App
 
-### `npm run build`
+👉 [https://phonix-nine.vercel.app/](https://phonix-nine.vercel.app/)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🛠️ Tech Stack
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Frontend**: React, Tailwind CSS
+- **APIs**:
+  - Dictionary API: [dictionaryapi.dev](https://dictionaryapi.dev/)
+  - Telugu Translation: [lingva.ml](https://lingva.ml/) unofficial translation API
+  - Web Speech API: Speech Synthesis + Speech Recognition (browser-based)
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 📦 Installation (For Developers)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+git clone https://github.com/premiitr/phonix.git
+cd phonix
+npm install
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 📌 Notes
 
-## Learn More
+- Ensure you're using a browser that supports the **Web Speech API** (like Chrome).
+- Telugu translation relies on third-party unofficial APIs and may occasionally fail.
+- Speech Recognition works best in quiet environments.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📄 License
 
-### Code Splitting
+MIT License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+## 👨‍💻 Author
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Prem** – [GitHub](https://github.com/premiitr)
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Feel free to ⭐ this repo or fork it to build your own language-learning tools!
