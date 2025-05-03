@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const splitSyllables = (word) => {
   const syllables = word
@@ -14,6 +14,22 @@ const PronouncePanel = ({ word }) => {
   const [isListening, setIsListening] = useState(false);
   const [userSpeech, setUserSpeech] = useState("");
   const [score, setScore] = useState(null);
+  const [meaning, setMeaning] = useState("");
+
+  useEffect(() => {
+    const fetchMeaning = async () => {
+      try {
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        const data = await res.json();
+        const meaning = data[0]?.meanings?.[0]?.definitions?.[0]?.definition;
+        setMeaning(meaning || "Not available");
+      } catch (err) {
+        console.error("Meaning fetch failed", err);
+        setMeaning("Not available");
+      }
+    };
+    fetchMeaning();
+  }, [word]);
 
   const handleSpeak = () => {
     const utterance = new SpeechSynthesisUtterance(word);
@@ -93,6 +109,8 @@ const PronouncePanel = ({ word }) => {
       <h2 className="text-2xl font-semibold mb-4 text-gray-700 capitalize">
         {word}
       </h2>
+
+      <p className="text-md italic mb-4"> Meaning: {meaning}</p>
 
       <div className="flex flex-wrap justify-center gap-4 mb-4">
         {syllables.map((s, idx) => (
