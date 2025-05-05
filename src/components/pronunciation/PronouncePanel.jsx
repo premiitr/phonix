@@ -36,7 +36,6 @@ const PronouncePanel = ({ word }) => {
       setShowMeaning(true);
       setShowTeluguMeaning(false);
     } catch (err) {
-      console.error("Error fetching English meaning:", err);
       setMeaning("Error fetching meaning.");
     }
   };
@@ -55,10 +54,7 @@ const PronouncePanel = ({ word }) => {
       setShowTeluguMeaning(true);
       setShowMeaning(false);
     } catch (err) {
-      console.error("Error fetching Telugu meaning:", err);
       setTeluguMeaning("Error fetching translation.");
-      setShowTeluguMeaning(true);
-      setShowMeaning(false);
     }
   };
 
@@ -128,51 +124,70 @@ const PronouncePanel = ({ word }) => {
   };
 
   return (
-    <div className="bg-orange-100 p-4 md:p-6 rounded-xl shadow-md w-full max-w-2xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-gray-700 capitalize text-center">
+    <div className="bg-gradient-to-br from-pink-50 via-orange-100 to-yellow-50 p-6 rounded-3xl shadow-xl w-full max-w-2xl mx-auto transition-all duration-500">
+      <h2 className="text-3xl font-bold text-center mb-6 capitalize">
         {word}
       </h2>
 
       <div className="flex flex-wrap justify-center gap-3 mb-6">
         {syllables.map((s, idx) => (
-          <div key={idx} className={`px-4 py-2 rounded-lg text-lg md:text-xl font-semibold transition-all duration-300 ${
+          <div
+            key={idx}
+            className={`px-5 py-2 rounded-full text-lg font-bold transition-all duration-300 ${
               currentIndex === idx
-                ? "bg-orange-500 scale-110 text-white shadow-lg"
-                : "bg-orange-200 text-gray-700"
-            }`}>
+                ? "bg-pink-500 text-white scale-110 shadow-lg animate-pulse"
+                : "bg-yellow-200 text-gray-800"
+            }`}
+          >
             {s}
           </div>
         ))}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
-        <button onClick={handleSpeak}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-lg text-lg">
+        <button
+          onClick={handleSpeak}
+          className="bg-pink-500 hover:bg-pink-600 text-white px-6 py-2 rounded-full text-lg transition"
+        >
           🔊 Speak
         </button>
-        <button onClick={handleRecord}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg text-lg">
+        <button
+          onClick={handleRecord}
+          className="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-full text-lg transition"
+        >
           🎤 {isListening ? "Listening..." : "Record"}
         </button>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
-        <button onClick={fetchEnglishMeaning}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
-          Show English Meaning
+        <button
+          onClick={fetchEnglishMeaning}
+          className="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-md"
+        >
+          📘 English Meaning
         </button>
-        <button onClick={fetchTeluguMeaning}
-          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md">
-          Show Telugu Meaning
+        <button
+          onClick={fetchTeluguMeaning}
+          className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-md"
+        >
+          🌐 Telugu Meaning
         </button>
       </div>
 
-      {showMeaning && (<p className="text-md text-green-800 font-semibold text-center px-2">{meaning}</p>)}
-      {showTeluguMeaning && (<p className="text-md text-purple-700 font-semibold text-center px-2">{teluguMeaning}</p>)}
+      {showMeaning && (
+        <p className="text-md text-green-700 font-medium text-center mb-2">
+           {meaning}
+        </p>
+      )}
+      {showTeluguMeaning && (
+        <p className="text-md text-purple-700 font-medium text-center mb-2">
+           {teluguMeaning}
+        </p>
+      )}
 
       {userSpeech && (
         <p className="text-gray-800 text-lg text-center mt-4">
-          You said: <strong>{userSpeech}</strong>
+          🗣️ You said: <strong>{userSpeech}</strong>
         </p>
       )}
       {score !== null && (
@@ -185,7 +200,7 @@ const PronouncePanel = ({ word }) => {
               : "text-red-500"
           }`}
         >
-          Score: {score} / 100
+          ✅ Pronunciation Score: {score} / 100
         </p>
       )}
     </div>
