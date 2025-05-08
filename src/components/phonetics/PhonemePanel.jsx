@@ -1,59 +1,27 @@
-import React from "react";
-
-// Helper function to say phoneme as letter-by-letter
-const speakIPA = (ipa) => {
-  // Remove slashes and convert to spelled characters (e.g., "/æ/" -> "ay", "/ʌ/" -> "uh")
-  const ipaMap = {
-    "æ": "a as in cat",
-    "eɪ": "a as in cake",
-    "ɑː": "ah",
-    "ə": "uh",
-    "ɛ": "eh",
-    "ɒ": "o as in hot",
-    "ɔː": "aw",
-    "iː": "ee",
-    "ʌ": "uh",
-    "uː": "oo",
-    "ʊ": "oo as in put",
-    "aɪ": "eye",
-    "dʒ": "j",
-    "ɪ": "ih",
-    "kw": "k w",
-    "ks": "k s",
-    "gz": "g z",
-    "j": "y",
-    "z": "z",
-    "s": "s",
-    "h": "h",
-    "g": "g",
-    "b": "b",
-    "p": "p",
-    "t": "t",
-    "d": "d",
-    "m": "m",
-    "n": "n",
-    "l": "l",
-    "r": "r",
-    "v": "v",
-    "f": "f",
-    "w": "w"
-  };
-
-  const cleaned = ipa.replace(/\//g, "");
-  const text = ipaMap[cleaned] || `The sound ${cleaned}`;
-  const utterance = new SpeechSynthesisUtterance(text);
-  speechSynthesis.speak(utterance);
-};
+import React, { useState } from "react";
 
 const PhonemePanel = ({ letter, sounds }) => {
-  const handlePlay = (word, ipa) => {
-    // First speak the word
-    const wordUtterance = new SpeechSynthesisUtterance(word);
-    wordUtterance.onend = () => {
-      // Then speak the phonetic sound
-      speakIPA(ipa);
+  const [error, setError] = useState(null);
+
+  const handlePlay = (sound) => {
+    setError(null); // Clear previous errors
+    const audio = new Audio(`/phonics/${sound.audio}.mp3`);
+
+    audio.play().catch((err) => {
+      setError(`Audio not found for "${sound.ipa}"`);
+    });
+
+    audio.onended = () => {
+      setTimeout(() => {
+        const wordUtterance = new SpeechSynthesisUtterance(`${sound.word}`);
+        wordUtterance.rate = 1;
+        speechSynthesis.speak(wordUtterance);
+      }, 300); // Small gap
     };
-    speechSynthesis.speak(wordUtterance);
+
+    audio.onerror = () => {
+      setError(`Audio file for "${sound.ipa}" is missing or not supported.`);
+    };
   };
 
   return (
@@ -61,16 +29,25 @@ const PhonemePanel = ({ letter, sounds }) => {
       <h2 className="text-2xl font-bold mb-4 text-purple-700">
         Sounds for letter "{letter}"
       </h2>
-      <div className="space-y-4 overflow-y-auto max-h-80 no-scrollbar"> {/* Scrollable container */}
+
+      {error && (
+        <div className="text-red-600 mb-4 text-sm bg-red-100 px-3 py-2 rounded">
+          {error}
+        </div>
+      )}
+
+      <div className="space-y-4 overflow-y-auto max-h-80 no-scrollbar">
         {sounds.map((sound, index) => (
-          <div key={index} className="p-4 bg-purple-50 rounded-xl flex items-center justify-between">
+          <div key={index}
+            className="p-4 bg-purple-50 rounded-xl flex items-center justify-between"
+          >
             <div>
               <div className="text-xl font-semibold">{sound.ipa}</div>
               <div className="text-md text-gray-600">
                 Example: {sound.word}
               </div>
             </div>
-            <button onClick={() => handlePlay(sound.word, sound.ipa)}
+            <button onClick={() => handlePlay(sound)}
               className="bg-purple-400 hover:bg-purple-500 text-white px-4 py-2 rounded-lg">
               🔊 Hear
             </button>
