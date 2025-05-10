@@ -5,6 +5,7 @@ import PronunciationApp from "./components/pronunciation/PronunciationApp";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
 import Error from "./components/Error";
+import WordPuzzleGame from "./components/wordpuzzle/WordPuzzleGame";
 
 const App =()=> {
 
@@ -38,6 +39,10 @@ export const appRouter = createBrowserRouter([
         path: '/phonetics', 
         element: <PhoneticApp/> 
       },
+      {
+        path:'/wordpuzzle',
+        element:<WordPuzzleGame/>
+      }
     ]
   }
 ]);
