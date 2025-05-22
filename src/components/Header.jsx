@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+
+  const navLinks = [
+    { to: '/', label: '🏠 Home', bg: 'bg-pink-100 hover:bg-pink-200' },
+    { to: '/wordpuzzle', label: '🧩 Word Puzzle', bg: 'bg-purple-100 hover:bg-purple-200' },
+    { to: '/pronounce', label: '🎤 Pronounce', bg: 'bg-teal-100 hover:bg-teal-200' },
+    { to: '/phonetics', label: '📚 Phonetics', bg: 'bg-yellow-100 hover:bg-yellow-200' },
+    { to: '/stories', label: '📖 Stories', bg: 'bg-yellow-100 hover:bg-yellow-200' }
+  ];
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <header className="sticky top-0 z-20 bg-[#fffbea] shadow-lg border-b border-yellow-200 font-['Comic_Sans_MS','Comic_Neue','Poppins',sans-serif] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-[70px]">
-          {/* Logo and Brand */}
+          {/* Logo */}
           <div className="flex items-center space-x-3">
             <Link to="/" className="flex items-center space-x-2">
               <img src="/logo192.png" alt="Phonix Logo"
@@ -19,50 +30,45 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-6 text-lg font-semibold text-[#6b5b95]">
-            <Link to="/" className="px-4 py-2 rounded-xl bg-pink-100 hover:bg-pink-200 transition duration-200">
-              🏠 Home
-            </Link>
-            <Link to="/wordpuzzle" className="px-4 py-2 rounded-xl bg-purple-100 hover:bg-purple-200 transition duration-200">
-              🧩 Word Puzzle
-            </Link>
-            <Link to="/pronounce" className="px-4 py-2 rounded-xl bg-teal-100 hover:bg-teal-200 transition duration-200">
-              🎤 Pronounce
-            </Link>
-            <Link to="/phonetics" className="px-4 py-2 rounded-xl bg-yellow-100 hover:bg-yellow-200 transition duration-200">
-              📚 Phonetics
-            </Link>
+            {navLinks.map(({ to, label, bg }) => (
+              <Link
+                key={to}
+                to={to}
+                className={`px-4 py-2 rounded-xl ${bg} transition duration-200 ${isActive(to) ? 'ring-2 ring-pink-400' : ''}`}
+              >
+                {label}
+              </Link>
+            ))}
           </nav>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button onClick={() => setMobileOpen(!mobileOpen)} className="text-4xl text-[#6b5b95] focus:outline-none">
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle mobile menu"
+              className="text-4xl text-[#6b5b95] focus:outline-none"
+            >
               {mobileOpen ? '✖' : '☰'}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Dropdown */}
+        {/* Mobile Nav */}
         {mobileOpen && (
-          <div className="md:hidden mt-2 py-3 space-y-2 bg-[#fffbea] rounded-b-xl shadow-inner border-t border-yellow-300">
-            <Link to="/" onClick={() => setMobileOpen(false)}
-              className="block px-4 py-2 text-lg text-[#6b5b95] rounded hover:bg-pink-100">
-              🏠 Home
-            </Link>
-            <Link to="/wordpuzzle" onClick={() => setMobileOpen(false)}
-              className="block px-4 py-2 text-lg text-[#6b5b95] rounded hover:bg-purple-100">
-              🧩 Word Puzzle
-            </Link>
-            <Link to="/pronounce" onClick={() => setMobileOpen(false)}
-              className="block px-4 py-2 text-lg text-[#6b5b95] rounded hover:bg-teal-100">
-              🎤 Pronounce
-            </Link>
-            <Link to="/phonetics" onClick={() => setMobileOpen(false)}
-              className="block px-4 py-2 text-lg text-[#6b5b95] rounded hover:bg-yellow-100">
-              📚 Phonetics
-            </Link>
-          </div>
+          <nav className="md:hidden mt-2 py-3 space-y-2 bg-[#fffbea] rounded-b-xl shadow-inner border-t border-yellow-300">
+            {navLinks.map(({ to, label, bg }) => (
+              <Link
+                key={to}
+                to={to}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-4 py-2 text-lg text-[#6b5b95] rounded ${bg} ${isActive(to) ? 'ring-2 ring-pink-400' : ''}`}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
         )}
       </div>
     </header>
